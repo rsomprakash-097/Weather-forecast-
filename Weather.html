@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather application using only javascript</title>
+</head>
+<body>
+    
+</body>
+    <script>
+        // Api_key 
+        const apiKey = "e36d1cb1d70cb65cb0092ed5d9d4f236"
+        // creating body
+
+        const body = document.body;
+        body.style.fontFamily = "Segoe UI, sans-serif";
+        body.style.margin = "0";
+        body.style.padding = "40px";
+        body.style.background = "linear-gradient(to right, #2c3e50, #4ca1af)";
+        body.style.color = "#ffffff";
+        body.style.display = "flex";
+        body.style.flexDirection = "column";
+        body.style.alignItems = "center";
+
+
+        // creating Heading 
+        const Heading = document.createElement("h1");
+        Heading.innerText = `Serach City for weather information`
+        body.appendChild(Heading)
+
+        // creating Serach box 
+        const SerachBox = document.createElement("input")
+        SerachBox.style.color = "black"
+        SerachBox.style.border = "3px solid black"
+        SerachBox.placeholder = "search city...."
+        SerachBox.style.fontSize ="1rem"
+        SerachBox.style.height = "1.5rem"
+        SerachBox.style.borderRadius = "0.5rem"
+        document.body.appendChild(SerachBox)
+        
+
+        // creating button
+        const button = document.createElement("button")
+        button.innerText = "search weather"
+        button.style.margin = "0.5rem"
+        button.style.border ="3px solid black"
+        button.style.borderRadius = "0.5rem"
+        button.style.color = "#2c3e50";
+        button.style.fontWeight = "bold";
+        button.style.border = "none";
+        button.style.borderRadius = "8px";
+        button.style.cursor = "pointer";
+        button.style.backgroundColor = "#ffffff";
+        button.style.color = "#2c3e50";
+        button.style.fontWeight = "bold";
+        button.style.transition = "background 0.3s ease";
+        button.onmouseover = () => button.style.backgroundColor = "#f1f1f1";
+        button.onmouseout = () => button.style.backgroundColor = "#ffffff";
+        document.body.appendChild(button)
+
+
+        // creating div for displaying
+        const WeatherBox = document.createElement("div");
+        WeatherBox.style.border = "1px solid #ccc";
+        WeatherBox.style.padding = "10px";
+        WeatherBox.style.background= "#ffffff";
+        WeatherBox.style.color = "black";
+        WeatherBox.style.borderRadius = "8px";
+        WeatherBox.style.maxWidth = "350px";
+        WeatherBox.style.boxShadow ="0 2px 8px";
+        WeatherBox.style.display = "none"
+        document.body.appendChild(WeatherBox)
+
+
+        // fetching api
+        async function GetWeather(city){
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+            
+            try {
+
+                const response = await fetch(url)
+                
+                if (!response.ok) {
+                    throw new Error("city is not found"); 
+                }
+                    const data = await response.json();
+                    console.log(data);
+                    
+                
+                
+
+                const temp = data.main.temp;
+                const desc = data.weather[0].description;
+                const humidity = data.main.humidity;
+                const wind = data.wind.speed;
+
+                WeatherBox.style.display = "block";
+                WeatherBox.innerHTML = `
+                <h2>Weather in ${city}</h2>
+                <p><strong>Tempreture:</strong>${temp} deg</p>
+                <p><strong>conditon:</strong>${desc}</p>
+                <p><strong>Humidity:</strong>${humidity}%</p>
+                <p><strong>WindSpeed:</strong>${wind}m/s</p>                
+                `
+
+                
+            } catch (error) {
+                WeatherBox.innerHTML = `<P style="color:red;">${error.message}<p/>`;
+                console.log("error:",error);  
+            }
+        }
+      
+        // Button click event
+     button.addEventListener("click", () => {
+        const city = SerachBox.value.trim();
+         if (city) {
+            GetWeather(city);
+        } else {
+            WeatherBox.innerHTML = `<p style="color:red;">Please enter a city name.</p>`;
+        }
+    });
+        
+    </script>
+</html>
